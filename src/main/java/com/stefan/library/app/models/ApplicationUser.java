@@ -40,14 +40,12 @@ public class ApplicationUser implements UserDetails {
             @JoinColumn(name = "role_id") })
     private Set<Role> authorities;
 
-    // empty constructor
+
     public ApplicationUser() {
-        super();
-        this.authorities = new HashSet<Role>();
+        this.authorities = new HashSet<>();
     }
 
     public ApplicationUser(Integer userId, String username, String password, Set<Role> authorities) {
-        super();
         this.userId = userId;
         this.username = username;
         this.password = password;
@@ -65,7 +63,6 @@ public class ApplicationUser implements UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // TODO Auto-generated method stub
         return this.authorities;
     }
 

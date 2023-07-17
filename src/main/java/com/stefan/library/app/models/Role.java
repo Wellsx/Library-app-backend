@@ -20,7 +20,7 @@ public class Role implements GrantedAuthority {
     private String authority;
 
     public Role() {
-        super();
+
     }
 
     public Role(String authority) {
@@ -34,7 +34,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        // TODO Auto-generated method stub
         return this.authority;
     }
 

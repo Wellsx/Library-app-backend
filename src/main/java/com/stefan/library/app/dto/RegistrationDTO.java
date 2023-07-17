@@ -1,4 +1,4 @@
-package com.stefan.library.app.models;
+package com.stefan.library.app.dto;
 
 public class RegistrationDTO {
     private String username;

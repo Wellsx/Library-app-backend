@@ -1,4 +1,6 @@
-package com.stefan.library.app.models;
+package com.stefan.library.app.dto;
+
+import com.stefan.library.app.models.ApplicationUser;
 
 public class LoginResponseDTO {
     private ApplicationUser user;

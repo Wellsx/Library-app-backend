@@ -1,7 +1,6 @@
 package com.stefan.library.app.services;
 
 import com.stefan.library.app.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,13 +9,12 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService implements UserDetailsService {
-
-    @Autowired
-    private PasswordEncoder encoder;
-
-    @Autowired
-    private UserRepository userRepository;
-
+    private final PasswordEncoder encoder;
+    private final UserRepository userRepository;
+    public UserService(PasswordEncoder encoder, UserRepository userRepository) {
+        this.encoder = encoder;
+        this.userRepository = userRepository;
+    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
