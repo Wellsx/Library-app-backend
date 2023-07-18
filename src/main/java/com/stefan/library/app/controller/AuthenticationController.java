@@ -26,8 +26,8 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationDTO body) {
-        RegistrationRequest registrationRequest = new RegistrationRequest(body.getUsername(), body.getPassword());
-        ValidationResult validationResult = registrationRequest.validate();
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest(body.getUsername(), body.getPassword());
+        ValidationResult validationResult = authenticationRequest.validate();
 
         if (!validationResult.isValid()) {
             return ResponseEntity.badRequest().body(new ErrorResponseDTO(validationResult.getMessage()));
@@ -44,8 +44,8 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody RegistrationDTO body) {
-        RegistrationRequest registrationRequest = new RegistrationRequest(body.getUsername(), body.getPassword());
-        ValidationResult validationResult = registrationRequest.validate();
+        AuthenticationRequest authenticationRequest = new AuthenticationRequest(body.getUsername(), body.getPassword());
+        ValidationResult validationResult = authenticationRequest.validate();
         if (!validationResult.isValid()) {
             return ResponseEntity.badRequest().body(new ErrorResponseDTO(validationResult.getMessage()));
         }

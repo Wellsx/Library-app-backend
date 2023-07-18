@@ -1,19 +1,21 @@
 package com.stefan.library.app.models;
 
-public class RegistrationRequest {
+import org.apache.commons.lang3.StringUtils;
+
+public class AuthenticationRequest {
     private String username;
     private String password;
-    public RegistrationRequest(String username, String password) {
+    public AuthenticationRequest(String username, String password) {
         this.username = username;
         this.password = password;
     }
 
     public ValidationResult validate() {
-        if (username.isEmpty()) {
+        if (StringUtils.isBlank(username)) {
             return ValidationResult.invalid("Username cannot be empty");
         }
 
-        if (password.isEmpty()) {
+        if (StringUtils.isBlank(password)) {
             return ValidationResult.invalid("Password cannot be empty");
         }
 
