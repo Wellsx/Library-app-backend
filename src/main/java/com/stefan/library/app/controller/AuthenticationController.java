@@ -2,7 +2,6 @@ package com.stefan.library.app.controller;
 
 import com.stefan.library.app.dto.ErrorResponseDTO;
 import com.stefan.library.app.dto.LoginResponseDTO;
-import com.stefan.library.app.dto.RegistrationDTO;
 import com.stefan.library.app.dto.RegistrationResponseDTO;
 import com.stefan.library.app.models.*;
 import com.stefan.library.app.services.AuthenticationService;
@@ -25,7 +24,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody RegistrationDTO body) {
+    public ResponseEntity<?> registerUser(@RequestBody AuthenticationRequest body) {
         AuthenticationRequest authenticationRequest = new AuthenticationRequest(body.getUsername(), body.getPassword());
         ValidationResult validationResult = authenticationRequest.validate();
 
@@ -43,7 +42,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody RegistrationDTO body) {
+    public ResponseEntity<?> loginUser(@RequestBody AuthenticationRequest body) {
         AuthenticationRequest authenticationRequest = new AuthenticationRequest(body.getUsername(), body.getPassword());
         ValidationResult validationResult = authenticationRequest.validate();
         if (!validationResult.isValid()) {
