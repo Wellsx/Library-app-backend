@@ -18,5 +18,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(errorMessage);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
+
 }
 

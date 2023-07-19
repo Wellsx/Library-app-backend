@@ -3,6 +3,7 @@ package com.stefan.library.app.controller;
 import com.stefan.library.app.dto.ErrorResponseDTO;
 import com.stefan.library.app.dto.LoginResponseDTO;
 import com.stefan.library.app.dto.RegistrationResponseDTO;
+import com.stefan.library.app.dto.UserDTO;
 import com.stefan.library.app.models.*;
 import com.stefan.library.app.services.AuthenticationService;
 import org.springframework.http.HttpStatus;
@@ -33,9 +34,14 @@ public class AuthenticationController {
         }
 
         ApplicationUser registeredUser = authenticationService.registerUser(body.getUsername(), body.getPassword());
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUserId(registeredUser.getUserId());
+        userDTO.setUsername(registeredUser.getUsername());
+
         RegistrationResponseDTO responseDTO = new RegistrationResponseDTO(
-                registeredUser.getUserId(),
-                registeredUser.getUsername(),
+                userDTO.getUserId(),
+                userDTO.getUsername(),
                 "Successfully registered"
         );
       return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);

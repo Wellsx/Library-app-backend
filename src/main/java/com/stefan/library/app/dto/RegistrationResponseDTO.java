@@ -4,7 +4,6 @@ public class RegistrationResponseDTO {
     private String username;
     private Integer userId;
     private String message;
-
     public RegistrationResponseDTO(Integer userId, String username, String message) {
         this.username = username;
         this.userId = userId;
