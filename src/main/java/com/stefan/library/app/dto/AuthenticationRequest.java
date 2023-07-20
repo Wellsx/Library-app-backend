@@ -1,15 +1,11 @@
-package com.stefan.library.app.models;
+package com.stefan.library.app.dto;
 
+import com.stefan.library.app.models.ValidationResult;
 import org.apache.commons.lang3.StringUtils;
 
 public class AuthenticationRequest {
     private String username;
     private String password;
-    public AuthenticationRequest(String username, String password) {
-        this.username = username;
-        this.password = password;
-    }
-
     public ValidationResult validate() {
         if (StringUtils.isBlank(username)) {
             return ValidationResult.invalid("Username cannot be empty");
@@ -32,19 +28,14 @@ public class AuthenticationRequest {
     public String getUsername() {
         return username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
-
     public String getPassword() {
         return password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
-
-
 }
 

@@ -1,9 +1,7 @@
 package com.stefan.library.app.dto;
 
 public class ErrorResponseDTO {
-
     private String message;
-
     public ErrorResponseDTO(String message) {
         this.message = message;
     }
@@ -13,6 +11,4 @@ public class ErrorResponseDTO {
     public void setMessage(String message) {
         this.message = message;
     }
-
-
 }

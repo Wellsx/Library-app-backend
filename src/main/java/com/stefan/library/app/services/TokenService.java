@@ -19,14 +19,11 @@ public class TokenService {
         this.jwtDecoder = jwtDecoder;
     }
     public String generateJwt(Authentication auth) {
-
         Instant now = Instant.now();
-
         // get roles out of auth obj to use in JWT
         String scope = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
-
         // info that JWT holds
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
@@ -34,8 +31,6 @@ public class TokenService {
                 .subject(auth.getName())
                 .claim("roles", scope)
                 .build();
-
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
-
 }

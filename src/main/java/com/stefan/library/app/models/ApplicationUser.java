@@ -23,7 +23,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "users")
 public class ApplicationUser implements UserDetails {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
@@ -32,7 +31,6 @@ public class ApplicationUser implements UserDetails {
     private String username;
     @JsonIgnore
     private String password;
-
     // multiple roles many to many annotations
     @ManyToMany(fetch = FetchType.EAGER)
     // store in junction table
@@ -40,76 +38,61 @@ public class ApplicationUser implements UserDetails {
             @JoinColumn(name = "role_id") })
     private Set<Role> authorities;
 
-
     public ApplicationUser() {
         this.authorities = new HashSet<>();
     }
-
     public ApplicationUser(Integer userId, String username, String password, Set<Role> authorities) {
         this.userId = userId;
         this.username = username;
         this.password = password;
         this.authorities = authorities;
     }
-
     public Integer getUserId() {
         return this.userId;
     }
-
     public void setUserId(Integer userId) {
         this.userId = userId;
     }
-
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
     }
-
     public void setAuthorities(Set<Role> authorities) {
         this.authorities = authorities;
     }
-
     @Override
     public String getPassword() {
         return this.password;
     }
-
     public void setPassword(String password) {
         this.password = password;
     }
-
     @Override
     public String getUsername() {
         return this.username;
     }
-
     public void setUsername(String username) {
         this.username = username;
     }
-
     @Override
     @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
-
     @Override
     @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
-
     @Override
     @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
     @Override
     @JsonIgnore
     public boolean isEnabled() {
         return true;
     }
-
 }

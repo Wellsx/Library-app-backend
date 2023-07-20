@@ -1,6 +1,5 @@
 package com.stefan.library.app.configuration;
 
-
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
@@ -8,6 +7,7 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -37,11 +37,9 @@ import java.util.Map;
 @Configuration
 public class SecurityConfiguration {
     private final KeyPair keyPair;
-
     public SecurityConfiguration() throws NoSuchAlgorithmException {
         this.keyPair = generateRsaKeyPair();
     }
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         String idForEncode = "bcrypt";
@@ -49,14 +47,12 @@ public class SecurityConfiguration {
         encoderMap.put(idForEncode, new BCryptPasswordEncoder());
         return new DelegatingPasswordEncoder(idForEncode, encoderMap);
     }
-
     @Bean
     public AuthenticationManager authManager(UserDetailsService detailsService) {
         DaoAuthenticationProvider daoProvider = new DaoAuthenticationProvider();
         daoProvider.setUserDetailsService(detailsService);
         return new ProviderManager(daoProvider);
     }
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -65,8 +61,8 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/auth/**").permitAll();
                     auth.requestMatchers("/admin/**").hasRole("ADMIN");
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
-                    auth.requestMatchers("/books/").permitAll();
-                    auth.requestMatchers("/books/addBook").hasAnyRole("ADMIN", "USER");
+                    auth.requestMatchers(HttpMethod.GET, "/books/").permitAll();
+                    auth.requestMatchers(HttpMethod.POST, "/books/").hasAnyRole("ADMIN", "USER");
                     auth.anyRequest().authenticated();
                 });
         http
@@ -78,13 +74,11 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
     @Bean
     public JwtDecoder jwtDecoder() {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         return NimbusJwtDecoder.withPublicKey(publicKey).build();
     }
-
     @Bean
     public JwtEncoder jwtEncoder() {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
@@ -94,8 +88,6 @@ public class SecurityConfiguration {
         JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(jwkSet);
         return new NimbusJwtEncoder(jwkSource);
     }
-
-
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
@@ -105,7 +97,6 @@ public class SecurityConfiguration {
         jwtConverter.setJwtGrantedAuthoritiesConverter(jwtGrantedAuthoritiesConverter);
         return jwtConverter;
     }
-
     private KeyPair generateRsaKeyPair() throws NoSuchAlgorithmException {
         KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(2048);

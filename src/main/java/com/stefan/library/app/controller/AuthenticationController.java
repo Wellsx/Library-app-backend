@@ -1,9 +1,6 @@
 package com.stefan.library.app.controller;
 
-import com.stefan.library.app.dto.ErrorResponseDTO;
-import com.stefan.library.app.dto.LoginResponseDTO;
-import com.stefan.library.app.dto.RegistrationResponseDTO;
-import com.stefan.library.app.dto.UserDTO;
+import com.stefan.library.app.dto.*;
 import com.stefan.library.app.models.*;
 import com.stefan.library.app.services.AuthenticationService;
 import org.springframework.http.HttpStatus;
@@ -19,47 +16,34 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin("*")
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
-
     public AuthenticationController(AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
-
     @PostMapping("/register")
-    public ResponseEntity<?> registerUser(@RequestBody AuthenticationRequest body) {
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest(body.getUsername(), body.getPassword());
-        ValidationResult validationResult = authenticationRequest.validate();
-
+    public ResponseEntity<?> registerUser(@RequestBody AuthenticationRequest request) {
+        ValidationResult validationResult = request.validate();
         if (!validationResult.isValid()) {
             return ResponseEntity.badRequest().body(new ErrorResponseDTO(validationResult.getMessage()));
         }
-
-        ApplicationUser registeredUser = authenticationService.registerUser(body.getUsername(), body.getPassword());
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUserId(registeredUser.getUserId());
-        userDTO.setUsername(registeredUser.getUsername());
-
+        RegistrationResponse registeredUser = authenticationService.registerUser(request);
         RegistrationResponseDTO responseDTO = new RegistrationResponseDTO(
-                userDTO.getUserId(),
-                userDTO.getUsername(),
+                registeredUser.getUserId(),
+                registeredUser.getUsername(),
                 "Successfully registered"
         );
       return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
-
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestBody AuthenticationRequest body) {
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest(body.getUsername(), body.getPassword());
-        ValidationResult validationResult = authenticationRequest.validate();
+    public ResponseEntity<?> loginUser(@RequestBody AuthenticationRequest request) {
+        ValidationResult validationResult = request.validate();
         if (!validationResult.isValid()) {
             return ResponseEntity.badRequest().body(new ErrorResponseDTO(validationResult.getMessage()));
         }
-        LoginResponseDTO response = authenticationService.loginUser(body.getUsername(), body.getPassword());
+        LoginResponseDTO response = authenticationService.loginUser(request.getUsername(), request.getPassword());
         if (response.getUser() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(new ErrorResponseDTO("Incorrect username or password"));
         }
         return ResponseEntity.ok(response);
     }
-
 }
