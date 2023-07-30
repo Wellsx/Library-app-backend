@@ -6,7 +6,7 @@ import com.stefan.library.app.dto.ErrorResponseDTO;
 import com.stefan.library.app.models.Book;
 import com.stefan.library.app.dto.CreateBookRequest;
 import com.stefan.library.app.dto.UpdateBookRequest;
-import com.stefan.library.app.models.ValidationResult;
+import com.stefan.library.app.dto.ValidationResult;
 import com.stefan.library.app.services.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

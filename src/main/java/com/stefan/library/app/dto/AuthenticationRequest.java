@@ -1,6 +1,5 @@
 package com.stefan.library.app.dto;
 
-import com.stefan.library.app.models.ValidationResult;
 import org.apache.commons.lang3.StringUtils;
 
 public class AuthenticationRequest {

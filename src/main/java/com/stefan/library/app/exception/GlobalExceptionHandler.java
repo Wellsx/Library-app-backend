@@ -9,20 +9,20 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
-    public ResponseEntity<ErrorResponseDTO> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException ex) {
-        String errorMessage = "Username is already taken";
-        ErrorResponseDTO errorResponse = new ErrorResponseDTO(errorMessage);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
     @ExceptionHandler(BookNotFoundException.class)
     protected ResponseEntity<Object> handleBookNotFoundException(BookNotFoundException ex, WebRequest request) {
         ErrorResponseDTO errorResponse = new ErrorResponseDTO(ex.getMessage());
         return handleExceptionInternal(ex, errorResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<List<String>> handleValidationException(ValidationException ex) {
+        List<String> errorMessages = ex.getErrorMessages();
+        // You can customize the response format as needed
+        return ResponseEntity.badRequest().body(errorMessages);
     }
 }
 

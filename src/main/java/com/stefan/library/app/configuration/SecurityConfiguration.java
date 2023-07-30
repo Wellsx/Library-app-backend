@@ -63,6 +63,7 @@ public class SecurityConfiguration {
                     auth.requestMatchers("/user/**").hasAnyRole("ADMIN", "USER");
                     auth.requestMatchers(HttpMethod.GET, "/books/").permitAll();
                     auth.requestMatchers(HttpMethod.POST, "/books/").hasAnyRole("ADMIN", "USER");
+                    auth.requestMatchers("/user-libraries/**").permitAll();
                     auth.anyRequest().authenticated();
                 });
         http

@@ -2,6 +2,8 @@ package com.stefan.library.app.services;
 
 import java.time.Instant;
 import java.util.stream.Collectors;
+
+import com.stefan.library.app.models.ApplicationUser;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
@@ -24,12 +26,14 @@ public class TokenService {
         String scope = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
+        Integer userId = ((ApplicationUser) auth.getPrincipal()).getUserId();
         // info that JWT holds
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .subject(auth.getName())
                 .claim("roles", scope)
+                .claim("user_id", userId)
                 .build();
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
     }
