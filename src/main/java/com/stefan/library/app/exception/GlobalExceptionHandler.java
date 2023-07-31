@@ -21,7 +21,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<List<String>> handleValidationException(ValidationException ex) {
         List<String> errorMessages = ex.getErrorMessages();
-        // You can customize the response format as needed
         return ResponseEntity.badRequest().body(errorMessages);
     }
 }

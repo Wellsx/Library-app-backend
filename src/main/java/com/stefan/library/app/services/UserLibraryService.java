@@ -2,6 +2,7 @@ package com.stefan.library.app.services;
 
 import com.stefan.library.app.dto.UserLibraryRequest;
 import com.stefan.library.app.dto.UserLibraryResponse;
+import com.stefan.library.app.exception.BookNotFoundException;
 import com.stefan.library.app.exception.ValidationException;
 import com.stefan.library.app.models.ApplicationUser;
 import com.stefan.library.app.models.Book;
@@ -14,18 +15,9 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
-import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -33,31 +25,20 @@ public class UserLibraryService {
     private final UserLibraryRepository userLibraryRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
+    private final AuthenticationProvider authenticationProvider;
 
-    public UserLibraryService(UserLibraryRepository userLibraryRepository, UserRepository userRepository, BookRepository bookRepository) {
+    public UserLibraryService(UserLibraryRepository userLibraryRepository, UserRepository userRepository,
+                              BookRepository bookRepository,
+                              AuthenticationProvider authenticationProvider) {
         this.userLibraryRepository = userLibraryRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
+        this.authenticationProvider = authenticationProvider;
     }
-    public UserLibraryResponse addUserLibraryBook(Integer userId, Integer bookId, UserLibraryRequest userLibraryRequest) {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        Set<ConstraintViolation<UserLibraryRequest>> violations = validator.validate(userLibraryRequest);
-
-        ApplicationUser user = userRepository.findById(userId).orElse(null);
-        Book book = bookRepository.findById(bookId).orElse(null);
-        if (!user.getUserId().equals(getAuthenticatedUserId())) {
-            throw new AuthenticationServiceException("Unauthorized");
-        }
-        if (!violations.isEmpty()) {
-            List<String> errorMessages = new ArrayList<>();
-            for (ConstraintViolation<UserLibraryRequest> violation : violations) {
-                errorMessages.add(violation.getMessage());
-            }
-            throw new ValidationException(errorMessages);
-        }
-        if (book == null) {
-            throw new ValidationException(Collections.singletonList("Book not found"));
-        }
+    public UserLibraryResponse addUserLibraryBook(Integer userId, Integer bookId, UserLibraryRequest userLibraryRequest)
+            throws BookNotFoundException{
+        ApplicationUser user = userRepository.findById(userId).orElseThrow();
+        Book book = bookRepository.findById(bookId).orElseThrow(new BookNotFoundException());
             UserLibrary userLibrary = new UserLibrary();
             userLibrary.setUser(user);
             userLibrary.setBook(book);
@@ -84,7 +65,7 @@ public class UserLibraryService {
         if (userLibrary == null) {
             return ResponseEntity.notFound().build();
         }
-        if (!user.getUserId().equals(getAuthenticatedUserId())) {
+        if (!user.getUserId().equals(authenticationProvider.getAuthenticatedUserId())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
@@ -114,7 +95,7 @@ public class UserLibraryService {
         if (userLibrary == null) {
             return ResponseEntity.notFound().build();
         }
-        if (!user.getUserId().equals(getAuthenticatedUserId())) {
+        if (!user.getUserId().equals(authenticationProvider.getAuthenticatedUserId())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
         userLibraryRepository.delete(userLibrary);
@@ -133,17 +114,6 @@ public class UserLibraryService {
             throw new ValidationException(Collections.singletonList("No user libraries found"));
         }
         return userLibraries;
-    }
-    private Integer getAuthenticatedUserId() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof JwtAuthenticationToken) {
-            JwtAuthenticationToken jwtAuthentication = (JwtAuthenticationToken) authentication;
-            Jwt jwt = jwtAuthentication.getToken();
-            Long userIdLong = jwt.getClaim("user_id");
-            return userIdLong.intValue();
-        } else {
-            throw new AuthenticationCredentialsNotFoundException("User not authenticated");
-        }
     }
 }
 

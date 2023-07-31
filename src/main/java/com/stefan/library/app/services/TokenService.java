@@ -27,7 +27,6 @@ public class TokenService {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
         Integer userId = ((ApplicationUser) auth.getPrincipal()).getUserId();
-        // info that JWT holds
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)

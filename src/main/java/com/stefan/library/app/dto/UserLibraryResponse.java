@@ -31,9 +31,7 @@ public class UserLibraryResponse {
     public Double getRating() {
         return rating;
     }
-
     public void setRating(Double rating) {
         this.rating = rating;
     }
-
 }
