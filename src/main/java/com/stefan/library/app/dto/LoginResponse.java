@@ -2,18 +2,18 @@ package com.stefan.library.app.dto;
 
 import com.stefan.library.app.models.ApplicationUser;
 
-public class LoginResponseDTO {
-    private ApplicationUser user;
+public class LoginResponse {
+    private ApplicationUser userName;
     private String accessToken;
-    public LoginResponseDTO(ApplicationUser user, String accessToken) {
-        this.user = user;
+    public LoginResponse(ApplicationUser userName, String accessToken) {
+        this.userName = userName;
         this.accessToken = accessToken;
     }
     public ApplicationUser getUser() {
-        return user;
+        return userName;
     }
-    public void setUser(ApplicationUser user) {
-        this.user = user;
+    public void setUser(String user) {
+        this.userName = userName;
     }
     public String getAccessToken() {
         return accessToken;

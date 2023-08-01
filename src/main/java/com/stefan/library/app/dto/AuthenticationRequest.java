@@ -1,29 +1,15 @@
 package com.stefan.library.app.dto;
 
-import org.apache.commons.lang3.StringUtils;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 public class AuthenticationRequest {
+    @NotBlank(message = "Username cannot be empty")
+    @Size(max = 15, message = "Maximum username length is 15 characters")
     private String username;
+    @NotBlank(message = "Password cannot be empty")
+    @Size(min = 8, message = "Password length should be at least 8 characters")
     private String password;
-    public ValidationResult validate() {
-        if (StringUtils.isBlank(username)) {
-            return ValidationResult.invalid("Username cannot be empty");
-        }
-
-        if (StringUtils.isBlank(password)) {
-            return ValidationResult.invalid("Password cannot be empty");
-        }
-
-        if (username.length() > 15) {
-            return ValidationResult.invalid("Maximum username length is 15 characters");
-        }
-
-        if (password.length() < 8) {
-            return ValidationResult.invalid("Password length should be at least 8 characters");
-        }
-
-        return ValidationResult.valid();
-    }
     public String getUsername() {
         return username;
     }

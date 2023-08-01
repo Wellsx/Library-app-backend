@@ -1,5 +1,6 @@
 package com.stefan.library.app.services;
 
+import com.stefan.library.app.exception.ResourceNotFoundException;
 import com.stefan.library.app.exception.ValidationException;
 import com.stefan.library.app.models.ApplicationUser;
 import com.stefan.library.app.repository.UserRepository;
@@ -28,7 +29,8 @@ public class UserService implements UserDetailsService {
     }
     @Transactional
     public void changePassword(Integer userId, String oldPassword, String newPassword){
-        ApplicationUser user = userRepository.findById(userId).orElse(null);
+        ApplicationUser user = userRepository.findById(userId).orElseThrow(() ->
+                new ResourceNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
             throw new ValidationException(Collections.singletonList("Invalid old password"));

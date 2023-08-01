@@ -1,13 +1,8 @@
 package com.stefan.library.app.dto;
 
-import com.stefan.library.app.models.Role;
-import java.util.Set;
-
 public class RegistrationResponse {
     private Integer userId;
     private String username;
-    private String password;
-    private Set<Role> authorities;
     public Integer getUserId() {
         return userId;
     }
@@ -20,16 +15,6 @@ public class RegistrationResponse {
     public void setUsername(String username) {
         this.username = username;
     }
-    public String getPassword() {
-        return password;
-    }
-    public void setPassword(String password) {
-        this.password = password;
-    }
-    public Set<Role> getAuthorities() {
-        return authorities;
-    }
-    public void setAuthorities(Set<Role> authorities) {
-        this.authorities = authorities;
-    }
+
+
 }
