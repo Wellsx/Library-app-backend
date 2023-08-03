@@ -3,8 +3,6 @@ package com.stefan.library.app.models;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Objects;
-
 @Data
 @Entity
 @Table(name = "books")

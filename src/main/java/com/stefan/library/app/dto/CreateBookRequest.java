@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.commons.lang3.StringUtils;
 
 @Getter
 @Setter
@@ -16,14 +15,4 @@ public class CreateBookRequest {
     private String bookTitle;
     @NotBlank(message = "Author field cannot be empty")
     private String bookAuthor;
-
-    public ValidationResult validateNewBook(){
-        if (StringUtils.isBlank(bookTitle)){
-            return ValidationResult.invalid("Title field can't be empty");
-        }
-        if (StringUtils.isBlank(bookAuthor)){
-            return ValidationResult.invalid("Author field can't be empty");
-        }
-        return ValidationResult.valid();
-    }
 }
