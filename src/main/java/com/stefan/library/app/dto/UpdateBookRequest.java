@@ -1,9 +1,16 @@
 package com.stefan.library.app.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.Setter;
 import org.apache.commons.lang3.StringUtils;
 
+@Getter
+@Setter
 public class UpdateBookRequest {
+    @NotBlank(message = "Title field cannot be empty")
     private String bookTitle;
+    @NotBlank(message = "Author field cannot be empty")
     private String bookAuthor;
     public ValidationResult validateBookUpdate(){
         if (StringUtils.isBlank(bookTitle)){
@@ -12,19 +19,6 @@ public class UpdateBookRequest {
         if (StringUtils.isBlank(bookAuthor)){
             return ValidationResult.invalid("Author field can't be empty");
         }
-
         return ValidationResult.valid();
-    }
-    public String getBookTitle() {
-        return bookTitle;
-    }
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
-    }
-    public String getBookAuthor() {
-        return bookAuthor;
-    }
-    public void setBookAuthor(String bookAuthor) {
-        this.bookAuthor = bookAuthor;
     }
 }

@@ -2,12 +2,11 @@ package com.stefan.library.app.controller;
 
 import com.stefan.library.app.dto.UpdateBookResponse;
 import com.stefan.library.app.dto.CreateBookResponse;
-import com.stefan.library.app.dto.ErrorResponseDTO;
 import com.stefan.library.app.models.Book;
 import com.stefan.library.app.dto.CreateBookRequest;
 import com.stefan.library.app.dto.UpdateBookRequest;
-import com.stefan.library.app.dto.ValidationResult;
 import com.stefan.library.app.services.BookService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,24 +37,13 @@ public class BookController {
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> createBook(@RequestBody CreateBookRequest request) {
-        ValidationResult validationResult = request.validateNewBook();
-        if (!validationResult.isValid()){
-            return ResponseEntity.badRequest().body(new ErrorResponseDTO(validationResult.getMessage()));
-        }
+    public ResponseEntity<?> createBook(@RequestBody @Valid CreateBookRequest request) {
         CreateBookResponse response = bookService.createBook(request);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateBook(@PathVariable Integer id, @RequestBody UpdateBookRequest request) {
+    public ResponseEntity<?> updateBook(@PathVariable Integer id, @RequestBody @Valid UpdateBookRequest request) {
         UpdateBookResponse updatedBook = bookService.updateBook(id, request);
-        ValidationResult validationResult = request.validateBookUpdate();
-        if (updatedBook == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        if (!validationResult.isValid()){
-            return ResponseEntity.badRequest().body(new ErrorResponseDTO(validationResult.getMessage()));
-        }
         UpdateBookResponse updateResponse = new UpdateBookResponse();
         updateResponse.setBookId(updatedBook.getBookId());
         updateResponse.setBookTitle(updatedBook.getBookTitle());

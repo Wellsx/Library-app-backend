@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.stefan.library.app.dto.RegistrationResponse;
 import com.stefan.library.app.dto.AuthenticationRequest;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,21 +21,14 @@ import com.stefan.library.app.repository.UserRepository;
 
 @Service
 @Transactional
+@AllArgsConstructor
 public class AuthenticationService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
-    public AuthenticationService(UserRepository userRepository, RoleRepository roleRepository,
-                                 PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager,
-                                 TokenService tokenService) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.authenticationManager = authenticationManager;
-        this.tokenService = tokenService;
-    }
+
     public RegistrationResponse registerUser(AuthenticationRequest request) {
         String username = request.getUsername();
         String password = request.getPassword();

@@ -1,12 +1,11 @@
 package com.stefan.library.app.dto;
 
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 public class ValidationResult {
     private final boolean valid;
     private final String message;
-    private ValidationResult(boolean valid, String message) {
-        this.valid = valid;
-        this.message = message;
-    }
     public boolean isValid() {
         return valid;
     }

@@ -2,21 +2,21 @@ package com.stefan.library.app.services;
 
 import com.stefan.library.app.dto.UpdateBookResponse;
 import com.stefan.library.app.dto.CreateBookResponse;
+import com.stefan.library.app.exception.ResourceNotFoundException;
 import com.stefan.library.app.models.Book;
 import com.stefan.library.app.dto.UpdateBookRequest;
 import com.stefan.library.app.dto.CreateBookRequest;
 import com.stefan.library.app.repository.BookRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@AllArgsConstructor
 public class BookService {
     private final BookRepository bookRepository;
-    public BookService(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }
     public List<Book> getAllBooks() {
         return bookRepository.findAll();
     }
@@ -36,8 +36,8 @@ public class BookService {
         return response;
     }
     public UpdateBookResponse updateBook(Integer id, UpdateBookRequest updateBookRequest) {
-            Optional<Book> bookOptional = bookRepository.findById(id);
-            Book book = bookOptional.get();
+        Book book = bookRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Book not found"));
             book.setBookTitle(updateBookRequest.getBookTitle());
             book.setBookAuthor(updateBookRequest.getBookAuthor());
 

@@ -39,8 +39,10 @@ public class UserLibraryController {
         return userLibraryService.getUserLibrary(userId);
     }
     @PostMapping("/{userId}/{bookId}")
-    public ResponseEntity<UserLibraryResponse> addUserLibraryBook(@PathVariable Integer userId, @PathVariable Integer bookId,
-                                                                  @RequestBody @Valid UserLibraryRequest userLibraryRequest){
+    public ResponseEntity<UserLibraryResponse> addUserLibraryBook(@PathVariable Integer userId,
+                                                                  @PathVariable Integer bookId,
+                                                                  @RequestBody @Valid UserLibraryRequest userLibraryRequest)
+            throws ValidationException {
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         Set<ConstraintViolation<UserLibraryRequest>> violations = validator.validate(userLibraryRequest);
         if (!userId.equals(authenticationProvider.getAuthenticatedUserId())) {
@@ -58,8 +60,10 @@ public class UserLibraryController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     @PutMapping("/{userId}/{bookId}")
-    public ResponseEntity<UserLibraryResponse> updateUserLibraryBook(@PathVariable Integer userId, @PathVariable Integer bookId,
-                                                             @RequestBody @Valid UserLibraryRequest userLibraryRequest) {
+    public ResponseEntity<UserLibraryResponse> updateUserLibraryBook(@PathVariable Integer userId,
+                                                                     @PathVariable Integer bookId,
+                                                             @RequestBody @Valid UserLibraryRequest userLibraryRequest)
+            throws ValidationException {
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
         Set<ConstraintViolation<UserLibraryRequest>> violations = validator.validate(userLibraryRequest);
         if (!userId.equals(authenticationProvider.getAuthenticatedUserId())) {

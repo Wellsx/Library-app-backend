@@ -4,6 +4,7 @@ import com.stefan.library.app.exception.ResourceNotFoundException;
 import com.stefan.library.app.exception.ValidationException;
 import com.stefan.library.app.models.ApplicationUser;
 import com.stefan.library.app.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -14,13 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 
 @Service
+@AllArgsConstructor
 public class UserService implements UserDetailsService {
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
-    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-    }
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         System.out.println("In the user details service");
@@ -28,7 +26,7 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User is invalid"));
     }
     @Transactional
-    public void changePassword(Integer userId, String oldPassword, String newPassword){
+    public void changePassword(Integer userId, String oldPassword, String newPassword) throws ValidationException {
         ApplicationUser user = userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("User not found"));
 

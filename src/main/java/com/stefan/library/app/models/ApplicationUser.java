@@ -4,6 +4,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -22,6 +25,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
+@Setter
+@AllArgsConstructor
 public class ApplicationUser implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -41,39 +46,21 @@ public class ApplicationUser implements UserDetails {
     public ApplicationUser() {
         this.authorities = new HashSet<>();
     }
-    public ApplicationUser(Integer userId, String username, String password, Set<Role> authorities) {
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
-        this.authorities = authorities;
-    }
     public Integer getUserId() {
         return this.userId;
-    }
-    public void setUserId(Integer userId) {
-        this.userId = userId;
     }
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.authorities;
     }
-    public void setAuthorities(Set<Role> authorities) {
-        this.authorities = authorities;
-    }
     @Override
     public String getPassword() {
         return this.password;
     }
-    public void setPassword(String password) {
-        this.password = password;
-    }
     @Override
     public String getUsername() {
         return this.username;
-    }
-    public void setUsername(String username) {
-        this.username = username;
     }
     @Override
     @JsonIgnore

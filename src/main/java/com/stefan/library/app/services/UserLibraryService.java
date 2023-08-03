@@ -9,22 +9,18 @@ import com.stefan.library.app.models.UserLibrary;
 import com.stefan.library.app.repository.BookRepository;
 import com.stefan.library.app.repository.UserLibraryRepository;
 import com.stefan.library.app.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 
 @Service
+@AllArgsConstructor
 public class UserLibraryService {
     private final UserLibraryRepository userLibraryRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-    public UserLibraryService(UserLibraryRepository userLibraryRepository, UserRepository userRepository,
-                              BookRepository bookRepository) {
-        this.userLibraryRepository = userLibraryRepository;
-        this.userRepository = userRepository;
-        this.bookRepository = bookRepository;
-    }
     public UserLibraryResponse addUserLibraryBook(Integer userId, Integer bookId, UserLibraryRequest userLibraryRequest)
             {
         ApplicationUser user = userRepository.findById(userId).orElseThrow(() ->
