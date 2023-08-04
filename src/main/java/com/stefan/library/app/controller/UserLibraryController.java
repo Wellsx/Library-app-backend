@@ -2,21 +2,16 @@ package com.stefan.library.app.controller;
 
 import com.stefan.library.app.dto.UserLibraryRequest;
 import com.stefan.library.app.dto.UserLibraryResponse;
-import com.stefan.library.app.exception.ValidationException;
 import com.stefan.library.app.models.UserLibrary;
 import com.stefan.library.app.services.AuthenticationProvider;
 import com.stefan.library.app.services.UserLibraryService;
-import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
 
 @RestController
 @RequestMapping("/user-libraries")
@@ -41,40 +36,19 @@ public class UserLibraryController {
     @PostMapping("/{userId}/{bookId}")
     public ResponseEntity<UserLibraryResponse> addUserLibraryBook(@PathVariable Integer userId,
                                                                   @PathVariable Integer bookId,
-                                                                  @RequestBody @Valid UserLibraryRequest userLibraryRequest)
-            throws ValidationException {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        Set<ConstraintViolation<UserLibraryRequest>> violations = validator.validate(userLibraryRequest);
+                                                                  @RequestBody @Valid UserLibraryRequest userLibraryRequest){
         if (!userId.equals(authenticationProvider.getAuthenticatedUserId())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        if (!violations.isEmpty()) {
-            List<String> errorMessages = new ArrayList<>();
-            for (ConstraintViolation<UserLibraryRequest> violation : violations) {
-                errorMessages.add(violation.getMessage());
-            }
-            throw new ValidationException(errorMessages);
-        }
         UserLibraryResponse response = userLibraryService.addUserLibraryBook(userId, bookId, userLibraryRequest);
-
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
     @PutMapping("/{userId}/{bookId}")
     public ResponseEntity<UserLibraryResponse> updateUserLibraryBook(@PathVariable Integer userId,
                                                                      @PathVariable Integer bookId,
-                                                             @RequestBody @Valid UserLibraryRequest userLibraryRequest)
-            throws ValidationException {
-        Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
-        Set<ConstraintViolation<UserLibraryRequest>> violations = validator.validate(userLibraryRequest);
+                                                                     @RequestBody @Valid UserLibraryRequest userLibraryRequest){
         if (!userId.equals(authenticationProvider.getAuthenticatedUserId())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-        if (!violations.isEmpty()) {
-            List<String> errorMessages = new ArrayList<>();
-            for (ConstraintViolation<UserLibraryRequest> violation : violations) {
-                errorMessages.add(violation.getMessage());
-            }
-            throw new ValidationException(errorMessages);
         }
         UserLibraryResponse response = userLibraryService.updateUserLibraryBook(userId, bookId, userLibraryRequest);
         return new ResponseEntity<>(response, HttpStatus.OK);

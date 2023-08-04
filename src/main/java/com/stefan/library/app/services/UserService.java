@@ -1,7 +1,6 @@
 package com.stefan.library.app.services;
 
 import com.stefan.library.app.exception.ResourceNotFoundException;
-import com.stefan.library.app.exception.ValidationException;
 import com.stefan.library.app.models.ApplicationUser;
 import com.stefan.library.app.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -12,7 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
+import javax.security.sasl.AuthenticationException;
 
 @Service
 @AllArgsConstructor
@@ -26,12 +25,13 @@ public class UserService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User is invalid"));
     }
     @Transactional
-    public void changePassword(Integer userId, String oldPassword, String newPassword) throws ValidationException {
+    public void changePassword(Integer userId, String oldPassword, String newPassword)
+            throws AuthenticationException {
         ApplicationUser user = userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-            throw new ValidationException(Collections.singletonList("Invalid old password"));
+            throw new AuthenticationException("Invalid old password");
         }
         String hashedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(hashedPassword);

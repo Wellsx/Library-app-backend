@@ -2,6 +2,7 @@ package com.stefan.library.app.services;
 
 import com.stefan.library.app.dto.UserLibraryRequest;
 import com.stefan.library.app.dto.UserLibraryResponse;
+import com.stefan.library.app.exception.DuplicateResourceException;
 import com.stefan.library.app.exception.ResourceNotFoundException;
 import com.stefan.library.app.models.ApplicationUser;
 import com.stefan.library.app.models.Book;
@@ -21,12 +22,13 @@ public class UserLibraryService {
     private final UserLibraryRepository userLibraryRepository;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
-    public UserLibraryResponse addUserLibraryBook(Integer userId, Integer bookId, UserLibraryRequest userLibraryRequest)
-            {
+    public UserLibraryResponse addUserLibraryBook(Integer userId, Integer bookId, UserLibraryRequest userLibraryRequest) {
         ApplicationUser user = userRepository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("User not found"));
         Book book = bookRepository.findById(bookId).orElseThrow(() ->
                 new ResourceNotFoundException("Book not found"));
+        UserLibrary existingLibrary = userLibraryRepository.findByUserAndBook(user, book);
+        if (existingLibrary == null) {
             UserLibrary userLibrary = new UserLibrary();
             userLibrary.setUser(user);
             userLibrary.setBook(book);
@@ -41,6 +43,8 @@ public class UserLibraryService {
             response.setRating(newLibrary.getRating());
 
             return response;
+        }
+        throw new DuplicateResourceException("Book is already in your library");
     }
     public UserLibraryResponse updateUserLibraryBook(Integer userId, Integer bookId, UserLibraryRequest userLibraryRequest) {
         ApplicationUser user = userRepository.findById(userId).orElseThrow(() ->

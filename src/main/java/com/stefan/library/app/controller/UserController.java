@@ -1,12 +1,13 @@
 package com.stefan.library.app.controller;
 
 import com.stefan.library.app.dto.ChangePasswordRequest;
-import com.stefan.library.app.exception.ValidationException;
 import com.stefan.library.app.services.AuthenticationProvider;
 import com.stefan.library.app.services.UserService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.security.sasl.AuthenticationException;
 
 @RestController
 @RequestMapping("/user")
@@ -23,7 +24,8 @@ public class UserController {
         return "User access level";
     }
     @PutMapping("/change-password")
-    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest request) throws ValidationException {
+    public ResponseEntity<String> changePassword(@RequestBody @Valid ChangePasswordRequest request)
+            throws AuthenticationException {
         Integer userId = authenticationProvider.getAuthenticatedUserId();
 
         userService.changePassword(userId, request.getOldPassword(), request.getNewPassword());

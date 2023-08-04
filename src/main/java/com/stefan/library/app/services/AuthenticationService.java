@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.stefan.library.app.dto.RegistrationResponse;
 import com.stefan.library.app.dto.AuthenticationRequest;
+import com.stefan.library.app.exception.DuplicateResourceException;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -32,7 +33,9 @@ public class AuthenticationService {
     public RegistrationResponse registerUser(AuthenticationRequest request) {
         String username = request.getUsername();
         String password = request.getPassword();
-
+        if (userRepository.findByUsername(username).isPresent()){
+            throw new DuplicateResourceException("Username is already taken");
+        }
         String encodedPassword = passwordEncoder.encode(password);
         Role userRole = roleRepository.findByAuthority("USER").get();
         Set<Role> authorities = new HashSet<>();
