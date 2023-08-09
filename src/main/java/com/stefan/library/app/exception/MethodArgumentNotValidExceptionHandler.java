@@ -1,7 +1,11 @@
 package com.stefan.library.app.exception;
 
+import com.stefan.library.app.dto.ErrorResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -22,18 +26,20 @@ public class MethodArgumentNotValidExceptionHandler {
     @ResponseStatus(BAD_REQUEST)
     @ResponseBody
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public List<String> methodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        BindingResult result = ex.getBindingResult();
-        List<FieldError> fieldErrors = result.getFieldErrors();
-        return processFieldErrors(fieldErrors);
-    }
+    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex, HttpServletRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+        errorResponse.setError(HttpStatus.BAD_REQUEST.getReasonPhrase());
 
-    private List<String> processFieldErrors(List<FieldError> fieldErrors) {
+        BindingResult bindingResult = ex.getBindingResult();
         List<String> errorMessages = new ArrayList<>();
-        for (FieldError fieldError: fieldErrors) {
-            errorMessages.add(fieldError.getDefaultMessage());
+        for (FieldError error : bindingResult.getFieldErrors()) {
+            errorMessages.add(error.getDefaultMessage());
         }
-        return errorMessages;
+        String message = StringUtils.collectionToDelimitedString(errorMessages, ", ");
+        errorResponse.setMessage(message);
+        errorResponse.setPath(request.getRequestURI());
+        return errorResponse;
     }
 }
 

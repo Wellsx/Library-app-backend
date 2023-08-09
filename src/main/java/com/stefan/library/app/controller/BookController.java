@@ -2,6 +2,7 @@ package com.stefan.library.app.controller;
 
 import com.stefan.library.app.dto.UpdateBookResponse;
 import com.stefan.library.app.dto.CreateBookResponse;
+import com.stefan.library.app.exception.ResourceNotFoundException;
 import com.stefan.library.app.models.Book;
 import com.stefan.library.app.dto.CreateBookRequest;
 import com.stefan.library.app.dto.UpdateBookRequest;
@@ -29,11 +30,7 @@ public class BookController {
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBookById(@PathVariable Integer id) {
         Optional<Book> bookOptional = bookService.getBookById(id);
-        if (bookOptional.isPresent()) {
-            return new ResponseEntity<>(bookOptional.get(), HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return bookOptional.map(book -> new ResponseEntity<>(book, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -60,6 +57,22 @@ public class BookController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+    @GetMapping("/search")
+    public ResponseEntity<List<Book>> searchBooksByTitle(@RequestParam("title") String title) {
+        List<Book> books = bookService.searchBooksByTitle(title);
+        if (books.isEmpty()) {
+            throw new ResourceNotFoundException("No books found with title: " + title);
+        }
+        return ResponseEntity.ok(books);
+    }
+    @GetMapping("/searchByAuthor")
+    public ResponseEntity<List<Book>> searchBooksByAuthor(@RequestParam("author") String author) {
+        List<Book> books = bookService.searchBooksByAuthor(author);
+        if (books.isEmpty()) {
+            throw new ResourceNotFoundException("No books found with author: " + author);
+        }
+        return ResponseEntity.ok(books);
     }
 }
 

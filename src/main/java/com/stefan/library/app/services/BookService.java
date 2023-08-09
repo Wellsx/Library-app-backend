@@ -52,5 +52,11 @@ public class BookService {
         Optional<Book> bookOptional = bookRepository.findById(id);
         bookOptional.ifPresent(bookRepository::delete);
     }
+    public List<Book> searchBooksByTitle(String title) {
+        return bookRepository.findByBookTitleContainingIgnoreCase(title);
+    }
+    public List<Book> searchBooksByAuthor(String author) {
+        return bookRepository.findByBookAuthorContainingIgnoreCase(author);
+    }
 }
 
